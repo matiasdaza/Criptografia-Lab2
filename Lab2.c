@@ -6,6 +6,8 @@
 int Hexadecimal(int A[128], int indice);
 char valHex(int R);
 void mostrar(int Baux[32]);
+void MixColumn (int BSalida[32]);
+int binario (int x);
 
 int main(void)
 {
@@ -227,7 +229,6 @@ void mostrar(int Baux[32]){
         if(x%2==0){
             printf(" ");
 
-
         }
         if(BSalida[x]>9){
             aux=valHex(BSalida[x]);
@@ -238,5 +239,96 @@ void mostrar(int Baux[32]){
         }
         j++;
 
+
     }
+    MixColumn(BSalida);
 }
+
+void MixColumn (int BSalida[32]){
+    int L, R, i, Binario[8];
+    int P1[8]={0,0,0,0,0,0,0,1};
+    int P2[8]={0,0,0,0,0,0,1,0};
+    int P3[8]={0,0,0,0,0,0,1,1};
+
+    for (i=0; i<8; i++){
+        //printf("%u", P1[i] );
+       
+
+
+    }
+    binario(BSalida[1]);
+
+
+}
+
+int binario (int x){
+    int dividendo, resto, divisor = 2, binario[4], i=0, binAux[4]={0,0,0,0}, j;
+    printf("\nNÚMERO DECIMAL= %d \n", x);
+    dividendo = x;
+    //printf("\nhola1= %d \n", dividendo);
+    while(dividendo >= divisor){ //Mientras el dividendo sea mayor o igual que el divisor, es decir, mayor o igual que 2.
+        resto = dividendo % 2;
+         //printf("\nhola3= %d \n", resto);
+        if(resto == 1){
+            binario[i] = 1; //Si el resto es igual a 1 concatenamos 1 a la variable string llamada binario
+        }
+        else{
+            binario [i]= 0; // Sino concatemanos 0
+        }
+        dividendo = dividendo/2; // Actualizamos el valor del dividendo dividiendolo entre 2.
+        //printf("\n Dividendo /2 = %d", dividendo);
+    
+        i++;
+    }
+    if(dividendo == 1)
+        binario[i]=1; // Por último sí el valor final del dividendo es 1 concatenamos 1 sino concatenamos 0.
+    else
+        binario [i]= 0;
+    //printf("valor de i: %d \n\n", i);
+
+    for (j=0; j<4; j++){
+            printf("%u", binario[j]);
+
+        }
+
+    //printf("\n\n");
+    printf("Número Binario: ");
+    i++;
+    printf("valor de i: %d \n\n", i);
+    if( i < 4 ){
+        if(i==1){
+            binAux[0]=0;
+            binAux[1]=0;
+            binAux[2]=0;
+            binAux[3]=binario[0];
+        }
+        if(i==2){
+            binAux[0]=0;
+            binAux[1]=0;
+            binAux[3]=binario[0];
+            binAux[2]=binario[1];
+        }
+        if(i==3){
+            binAux[0]=0;
+            binAux[3]=binario[0];
+            binAux[2]=binario[1];
+            binAux[1]=binario[2];
+        }
+        
+    }else{
+        binAux[3]=binario[0];
+        binAux[2]=binario[1];
+        binAux[1]=binario[2];
+        binAux[0]=binario[3];
+        
+    }
+    for (i=0; i<4; i++){
+            printf("%u", binAux[i]);
+
+        }
+    //printf("Largo: %d \n", sizeof binario / sizeof *binario );
+    return 0;
+
+
+}
+

@@ -5,15 +5,15 @@
 
 
 int Hexadecimal(int A[128],int indice); //, int indice
-void ShiftRow(int Baux[32]);
+void mostrar(int Baux[32]);
 void MixColumn (int BSalida[32]);
-int hex2bin (int l, int r);
+//int conversor (int auxB, int base1, int base2);
 
 
 
 int main(void)
 {
-   int i, A[128], B[128], indice=1;
+   int i, A[128], B[128], indice=1, Mat[128];
    unsigned semilla = (unsigned)time(NULL);
    FILE *archivo=NULL;
 
@@ -64,35 +64,43 @@ int main(void)
 
  int Hexadecimal(int A[128], int indice){ //
 
-    int  i, j=0, Baux[32], L,R; //En N guardamos el número completo de 8 bits
-    
+    int  i, j, k=5, Baux[32], auxL[64], auxR[64],L,R, N[8]; //En N guardamos el número completo de 8 bits
+
     i = indice*8;   
     while( i <= 128 ){
 
+        N[7] = A[i];   //R4
+        N[6] = A[i-1]; //R3
+        N[5] = A[i-2]; //R2
+        N[4] = A[i-3]; //R1
+        N[3] = A[i-4]; //L4
+        N[2] = A[i-5]; //L3 
+        N[1] = A[i-6]; //L2
+        N[0] = A[i-7]; //L1
 
-        R = A[i]*1 + A[i-1]*2 + A[i-2]*4 + A[i-3]*8;
-        L = A[i-4]*1 + A[i-5]*2 + A[i-6]*4 + A[i-7]*8;
-
+        
         printf("\n"); 
+        //Con %X se le da formato hex en pantalla 
+        printf(" Hexadecimal B%d = %X%X ", indice-1, (N[3] *1 + N[2]*2 + N[1]*4 + N[0]*8),N[7]*1 + N[6]*2 + N[5]*4 + N[4]*8); 
 
-        printf(" Hexadecimal B%d = %X%X ", indice-1, L,R); //Con %X se le da formato hex en pantalla 
+        for (j=1; j <= 8; j++){         //Arreglo para los 8 bits binarios
+            auxL[j] = N[j];
+            printf("%d", auxL[j] ); 
+        }
 
-        Baux[j]=L;
-        j++;
-        Baux[j]=R;
-        j++;
-            
+
+                  
         indice=indice+1;
         i=indice*8;
-    
-    }
         
-    ShiftRow(Baux);   
+    }
+    system("pause");   
+    //mostrar(Baux);   
     
 }
 
 
-void ShiftRow(int Baux[32]){
+void mostrar(int Baux[32]){
     int i=0, j=1, x=0, BEntrada[32], BSalida[32];
 
 
@@ -102,6 +110,7 @@ void ShiftRow(int Baux[32]){
 
     //0
     BEntrada[0]=BSalida[0]=Baux[0];
+    printf("%d %d %d \n",BEntrada[0], BSalida[0], Baux[0]  );
     BEntrada[1]=BSalida[1]=Baux[1];
     //1
     BEntrada[8]=BSalida[14]=Baux[2];
@@ -198,9 +207,9 @@ void ShiftRow(int Baux[32]){
 }
 
 void MixColumn (int BSalida[32]){
-   int i, j=0,k,   auxP, ind, B[64], l,r, C[64];
+   int i, j,k=0, aux,  auxP, ind, bin, L[16], R[16], auxL[32], auxR[32];
    int P1[8] = {0,0,0,0,0,0,0,1} , P2[8] = {0,0,0,0,0,0,1,0}, P3[8] = {0,0,0,0,0,0,1,1};
-   char hex[16],num[2],binL[1], binR [1];
+   char hex[16] ;
    
     const int MatPol[4][4] = { { 02, 03, 01, 01 },
                                { 01, 02, 03, 01 },
@@ -209,66 +218,42 @@ void MixColumn (int BSalida[32]){
 
 
    
-    i=j=0;
-    
-    printf("\n");
-    printf("Matriz B 8 bits: \n" );
+    i=0;
+    for (j = 0; j < 16; j++){
         while (i < 32){
 
-            l=binL[1]= BSalida[i];
-            r=binR[1]= BSalida[i+1];
-            
-            printf("\n");
-            printf("%d ",l );
-            printf("%d ",r  );
-            
-            hex[j] = hex2bin(l,r);
-           
-            //if (l == r){
-            //    hex[j] = hex2bin(l,r); //Comprobar el ciclo ya que por pantalla se invierten los valores para l>r
-            //}
-            //else {
-            //    if (l > r){
-            //    hex[j] = hex2bin(l,r);
-            //}   }
-            
-            printf("\n ");
-            i = i + 2;
-            j++;
-        }
+            auxL[i] = BSalida[i];
+            auxR[i+1] = BSalida[i+1];
+
+            //hex[j];
+            //strcat(hex,L);
+            //strcat(hex,R);
         
+        //bin = HexToBinary(auxB);
+        //bin = conversor(auxB,2,10);
+            printf("%d %d ", auxL[i],auxR[i+1]);
+            i = i + 2;
+        }
+    }    
     printf("\n");
 
-    k=0;
-    //Recorre la matriz C para multiplicar con la matriz BSalida
-    //for (i = 0; i< 4; i++){
-    // for (j = 0; j< 4; j++){
-       
-          //auxP = MatPol[i][j];
-    k=0;
-    while ( i < 32){
-        for (ind = 0; ind < 8 ; ind++){
 
-        //C[1] = P2 * hex[0] + P3 * hex[5] + P1* hex[10], P1 * hex[15];
-        //printf("%dp %dh", P1[ind], l );
-        j++;
-        //C[2] = P1 * hex[4] + P2 * hex[9] + P3* hex[14], P1 * hex[3];
-        //C[3] = P1 * hex[8] + P1 * hex[13] + P2* hex[2], P3 * hex[7];
-        //C[4] = P3 * hex[12] + P1 * hex[1] + P1* hex[6], P2 * hex[11];
-            
-    }
-    }   
-            /*
-            if ( auxP == 01 ){
+    //Recorre la matriz C para multiplicar con la matriz BSalida
+    for (i = 0; i< 4; i++){
+     for (j = 0; j< 4; j++){
+       
+          auxP = MatPol[i][j];
+
+          if ( auxP == 01 ){
 
                 for (ind = 0; ind < 8; ind++){
 
-                    printf("%d ", P1[ind]);
+                    //printf("%d ", P1[ind]);
         
                 }
                 printf("\n");  
             }
-            if ( auxP  == 02 ){
+          if ( auxP  == 02 ){
 
                 for (ind = 0; ind < 8; ind++){
 
@@ -277,7 +262,7 @@ void MixColumn (int BSalida[32]){
                 }
                 printf("\n");
             }
-            if ( auxP  == 03 ){
+          if ( auxP  == 03 ){
 
                 for (ind = 0; ind < 8; ind++){
 
@@ -285,69 +270,26 @@ void MixColumn (int BSalida[32]){
         
                 }
                 printf("\n");
-            }*/
-          //}
-        //}
-    //}
+            }
+        }
+    }
     
 }
 
 
+/*int conversor(int auxB,int base1,int base2)
+{
+   int alg, mult=1, n2=0;
 
-int hex2bin (int l, int r) // Función que retorna los valores en binario
-{   
-    //printf("%d %d\n", l , r);
-  
-    if (l == 0 || r == 0)
-        printf("0000");
-
-    if (l == 1 || r == 1 )
-        printf("0001");
- 
-    if (l == 2 || r == 2 ) 
-         printf("0010");
-  
-    if (l  == 3 || r == 3 )
-        printf("0011");
-  
-    if (l  == 4 || r  == 4) 
-        printf("0100");
-    
-    if (l  == 5 || r == 5 )
-        printf("0101");
-
-    if (l == 6  || r == 6)
-        printf("0110");
-    
-    if (l  == 7 || r == 7 ) 
-        printf("0111");
-    
-    if (l  == 8 || r == 8) 
-        printf("1000");
-    
-    if (l  == 9 || r == 9 )
-        printf("1001");
-      
-    if (l  == 10 || r == 10)
-        printf("1010");
- 
-    if (l == 11 || r == 11) 
-        printf("1011");
-    
-    if (l  == 12 || r == 12)  
-        printf("1100");
-    
-    if (l  == 13 || r == 13 ) 
-        printf("1101");    
-
-    if (l  == 14 || r == 14)
-         printf("1110");
-
-    if (l  == 15 | r == 15 )
-       printf("1111");
-   
+    while (auxB > 0){
+        alg = auxB % base1;
+        auxB = auxB / base1;
+        n2 = (alg*mult) + n2;
+        mult = base2 * mult;
+    }
+    return n2;
 }
-
+*/
 
 
 //int HextoBin (int auxB[4])

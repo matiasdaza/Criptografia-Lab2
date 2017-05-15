@@ -14,14 +14,14 @@
      /* FUNCIONES PARA TRABAJAR EN GF2*/
     int * getpolinomio(int B[128],int inicio, int fin, int pol);
     int * sumpolinomio(int *p1,int *p2, int *p3, int *p4);
-    char * iToA (int *p);
+    void final(int *pres);
 
 
     int main(void)
     {
-       int i,j, A[128], B[128], indice=1;
+       int i, A[128], B[128], indice=1;
        unsigned semilla = (unsigned)time(NULL);
-       FILE *archivo=NULL;
+       
 
     //Generación del número aleatoreo de 128 bits
     //Mostramos en pantalla y guardamos la información en el arreglo A.
@@ -43,7 +43,7 @@
         printf("Matriz de entrada A: "); 
         printf("\n");
 
-        i=j=1;
+        i=1;
         while (i<=128){
             printf ("%d", A[i]);
             
@@ -214,10 +214,8 @@
         int i, j, k, l, r, m, n, x, aux, inicio, fin, ind=0,B[128];
         int *p1,*p2,*p3,*p4,*pres;
 
-        char P1[8];
-        strcpy(P1,"0");
 
-        char str[5],bin[134],r1[128];  
+        char str[5],bin[134];  
 
         const int MatPol[4][4] = { { 02, 03, 01, 01 },
                                    { 01, 02, 03, 01 },
@@ -301,13 +299,14 @@
                     //pres guarda el resultado de cada fila por cada columna
                     pres = sumpolinomio(p1,p2,p3,p4);
 
-                    printf(" C[%d] ",x);
+                    printf("C[%d] ",x);
                     x++; 
 
                     for (i=0;i<=7;i++){
                         
                         printf("%d ",pres[i]);
                     }
+                    final(pres);
                     printf("\n");
             
                 }
@@ -316,12 +315,13 @@
                 n=0;
                 k=ind*4;
                 aux=0;
-                strcat(r1,iToA(pres));
+                
                   
             }
             ind++;
             k=ind*4;
             m=n=0;
+            
             printf("\n");
             
 
@@ -332,28 +332,21 @@
                     { C3(24,31)  C7(56,63)  C11(88,95)  C15(120,127) };  
         */
         
-        k=0;
-        j=1;
-        //Con la matriz final mostramos nuevamente la parte izquierda y derecha como hexadecimal
-        int L,R,aux2;
-        while (k < 16){
-            aux2=indB[k];
-            L = (r1[aux2]-48)*8 + (r1[aux2+1]-48)*4 + (r1[aux2+2]-48)*2 + (r1[aux2+3]-48)*1;
-            R = (r1[aux2+4]-48)*8 + (r1[aux2+5]-48)*4 + (r1[aux2+6]-48)*2 + (r1[aux2+7]-48)*1;
 
-            printf(" "); 
-
-            printf(" %X%X ", L,R);
-            k++;
-            if (j==4){
-                    printf("\n");
-                    j=0;
-            }
-            j++;
-        }
 
     }    
+    void final(int *pres)
+    {
+        //Con la matriz final mostramos nuevamente la parte izquierda y derecha como hexadecimal
+        int L,R;
 
+            L = pres[0]*8 + pres[1]*4 + pres[2]*2 + pres[3]*1;
+            R = pres[4]*8 + pres[5]*4 + pres[6]*2 + pres[7]*1;
+
+            printf(" %X%X ", L,R);
+            
+    }
+    
 
     int * getpolinomio(int B[128],int inicio, int fin, int pol)
     {
@@ -428,107 +421,21 @@
         return(p);
     }
 
-    char * iToA (int *p)
-    {   int i;
-        char buf[9],*str;
-        str = malloc(sizeof(char)*8);
-
-        for(i = 0; i<=7; i++){
-
-            if(p[i]%2 != 0)
-                buf[i] ='1';
-            
-            else
-                buf[i] ='0';
-            
-        }
-        buf[8] = '\0';
-        strcat(str,buf);
-        return str;
-    }
 
     char * conToBin (int n) // Función que retorna el puntero del valor en binario
     {   
+        int j;
+
         char  *string;
-        string = malloc(sizeof(char)*1);
-       
-        if (n == 0){
-            strcat(string, "0000");
-            return string;   
-        }
+        string = malloc(sizeof(char)*4);
 
-        if (n == 1){
-            strcat(string, "0001");
-            return string;
-        }
-     
-        if (n == 2){
-            strcat(string, "0010");
-            return string;
-        }
-        if (n == 3){
-            strcat(string, "0011");
-            return string;
-        }
-      
-        if (n == 4){ 
-            strcat(string, "0100");
-            return string;   
-        }
-        if (n == 5){
-            strcat(string, "0101");
-            return string;
-        }
+        char *hexToBin[16] = {"0000", "0001", "0010", "0011", "0100", "0101","0110", "0111", 
+                              "1000", "1001", "1010", "1011", "1100", "1101", "1110", "1111"};
 
-        if (n == 6){
-            strcat(string, "0110");
-            return string;
-        }
-        
-        if (n == 7){
-            strcat(string, "0111");
-            return string;  
-        }
-        
-        if (n == 8){
-            strcat(string, "1000");
-            return string;
-        }
-        
-        if (n == 9){
-            strcat(string, "1001");
-            return string;
-        }
-          
-        if (n == 10){
-            strcat(string, "1010");
-            return string;
-        }
-     
-        if (n == 11){
-            strcat(string, "1011");
-            return string;
-        }
-        
-        if (n == 12){
-            strcat(string, "1100");
-            return string;
-        }
-        
-        if (n == 13){
-            strcat(string, "1101");
-            return string;
-        }
-
-        if (n == 14){
-            strcat(string, "1110");
-            return string;
-         }
-        if (n == 15){
-            strcat(string, "1111");
-            return string;
-        }
+        for(j = 0; j < 16; j++){
+            if(n == j)
+                strcat(string, hexToBin[j]);
+        }      
+        return string;
        
     }
-
-

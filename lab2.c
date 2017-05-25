@@ -230,10 +230,10 @@
         int indB[16] = {0,32,64,96,8,40,72,104,16,48,80,112,24,56,88,120};
         i=0;
         j=1;
-        printf("\n");
+      
         //Aquí la matriz BSalida de 32 bits enteros la convertimos a su equivalente en binario con la parte 
         //izquierda(l) y derecha (r) en la función conToBin, luego los 8 bits los guardamos como string en str.
-        printf("Matriz B 8 bits: \n" );
+       // printf("Matriz B 8 bits: \n" );
             while (i <= 32){
 
                 l = BSalida[i];
@@ -243,12 +243,6 @@
 
                 strcpy(str,conToBin(l));
                 strcat(str,conToBin(r));
-                printf("%s ", str);
-                if (j==4){
-                    printf("\n");
-                    j=0;
-                }
-                j++;
                 strcat(bin,str);     
             }
 
@@ -315,8 +309,7 @@
                 n=0;
                 k=ind*4;
                 aux=0;
-                
-                  
+                    
             }
             ind++;
             k=ind*4;
@@ -324,17 +317,11 @@
             
             printf("\n");
             
-
         }
-        /*r1[128] = { CO(0,7)    C4(32,39)  C8(64,71)   C12(96,103)  },
-                    { C1(8,15)   C5(40,47)  C9(72,79)   C13(104,111) },
-                    { C2(16,23)  C6(48,55)  C10(80,87)  C14(112,119) },
-                    { C3(24,31)  C7(56,63)  C11(88,95)  C15(120,127) };  
-        */
-        
+       
+    } 
 
-
-    }    
+    // Función que muestra el valor final en hexadecimal
     void final(int *pres)
     {
         //Con la matriz final mostramos nuevamente la parte izquierda y derecha como hexadecimal
@@ -347,7 +334,7 @@
             
     }
     
-
+    // Función que retorna el producto de la matriz shiftrow por el polinomio 
     int * getpolinomio(int B[128],int inicio, int fin, int pol)
     {
         int i,n, *p;
@@ -403,26 +390,27 @@
         
     }
     
-    int * sumpolinomio(int *p1,int *p2, int *p3, int *p4)
+    // Función que retorna el puntero de la suma de p1+p2+p3+p4
+    int * sumpolinomio(int *p1, int *p2, int *p3, int *p4)
     {
-        int i,n, *p;
-        p=malloc((8)*sizeof(int));
+        int i, *p;
+        p = malloc((8)*sizeof(int));
         
-        for (i=0;i<=7;i++){
-            if (p1[i]==p2[i] || p3[i]==p4[i])
-                p[i]=0;
-            if (p1[i]!=p2[i] || p3[i]!=p4[i])
-                p[i]=0;
-            if (p1[i]==p2[i]==p3[i]==p4[i])
-                p[i]=0;
+        for (i = 0; i <= 7; i++){
+            if (p1[i] == p2[i] || p3[i] == p4[i])
+                p[i] = 0;
+            if (p1[i] != p2[i] || p3[i] != p4[i])
+                p[i] = 0;
+            if (p1[i] == p2[i] == p3[i] == p4[i])
+                p[i] = 0;
             else 
-                p[i]=1;
+                p[i] = 1;
         }
         return(p);
     }
 
-
-    char * conToBin (int n) // Función que retorna el puntero del valor en binario
+    // Función que retorna el valor de n en su equivalente binario
+    char * conToBin (int n) 
     {   
         int j;
 
